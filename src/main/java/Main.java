@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         //Se debe tener creado las carpetas 1matriz y 2matriz en el src/main/java/
-        //crearMatrices(); //GENERA LAS MATRICES (TARDA VARIOS MINUTOS POR SU MAGNITUD)
+        crearMatrices(); //GENERA LAS MATRICES (TARDA VARIOS MINUTOS POR SU MAGNITUD)
 
         /*          1.NaivOnArray
                     2.NaivLoopUnrollingTwo
@@ -47,11 +47,12 @@ public class Main {
                      */
         // Llamar al método vaciarTiempos() para limpiar los archivos de tiempos antes de empezar
         //vaciarTiempos();
+
         /*
         for(int algoritmo=1; algoritmo<=15; algoritmo++) {
             for (int caso = 1; caso <= 8; caso++) {
 
-                System.out.println("Ejecutando algoritmo "+algoritmo+" caso "+caso);
+                System.out.println("Ejecutando algoritmo "+algoritmo+" caso "+caso+"...");
                 matrices(caso);
                 algorithm(algoritmo);
                 System.out.println("Termino algoritmo: " + algoritmo + " caso " + caso + "\n");
@@ -99,8 +100,8 @@ public class Main {
 
     public static void crearMatrices() {
         String ruta = "src/main/java/";
-        int n = 256; // Número de columnas
-        int m = 256; // Número de filas
+        int n = 16; // Número de columnas
+        int m = 16; // Número de filas
 
         // Generar la matriz con números aleatorios de 6 dígitos
         for (int i = 0; i < 8; i++) {
@@ -109,19 +110,11 @@ public class Main {
             guardarMatrizEnArchivo(matriz, ruta+"1matriz/1matriz_" + n + "x" + m + ".txt");
             guardarMatrizEnArchivo(matriz, ruta+"2matriz/2matriz_" + n + "x" + m + ".txt");
 
-            if (i < 3) {
-                n = n * 2;
-                m = m * 2;
-            }else if(i<4){
-                n=n+1024;
-                m=m+1024;
-            }else{
-                n = n + 2048;
-                m = m + 2048;
-            }
+            n=n*2;
+            m=m*2;
         }
 
-        System.out.println("Matrices generadas");
+        System.out.println("Matrices generadas \n");
     }
 
 
@@ -170,7 +163,7 @@ public class Main {
                     break;
                 case 4:
                     // StrassenNaiv
-                    executeAlgorithm(() -> StrassenNaiv.multiply(Matriz1, Matriz2), option);
+                    executeAlgorithm(() -> StrassenNaiv.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 case 5:
                     // WinogradOriginal
@@ -182,7 +175,7 @@ public class Main {
                     break;
                 case 7:
                     // StrassenWinograd
-                    executeAlgorithm(() -> StrassenWinograd.multiply(Matriz1, Matriz2), option);
+                    executeAlgorithm(() -> StrassenWinograd.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 case 8:
                     // III_3_Sequential_Block
@@ -251,44 +244,38 @@ public class Main {
         String ruta = "src/main/java/";
         String ruta1 = ruta+"1matriz/";
         String ruta2 = ruta+"2matriz/";
-
+        int tam=0;
         switch (caso) {
 
-
             case 1:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_256x256.txt", 256);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_256x256.txt", 256);
+                tam=16;
                 break;
             case 2:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_512x512.txt", 512);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_512x512.txt", 512);
+                tam=32;
                 break;
             case 3:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_1024x1024.txt", 1024);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_1024x1024.txt", 1024);
+                tam=64;
                 break;
             case 4:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_2048x2048.txt", 2048);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_2048x2048.txt", 2048);
+                tam=128;
                 break;
             case 5:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_3072x3072.txt", 3072);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_3072x3072.txt", 3072);
+                tam=256;
                 break;
             case 6:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_4096x4096.txt", 4096);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_4096x4096.txt", 4096);
+                tam=512;
                 break;
             case 7:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_6144x6144.txt", 6144);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_6144x6144.txt", 6144);
+                tam=1024;
                 break;
             case 8:
-                Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_8192x8192.txt", 8192);
-                Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_8192x8192.txt", 8192);
+                tam=2048;
                 break;
             default:
+
                 break;
         }
+        Matriz1 = LeerArchivoTxt.leerArchivo(ruta1+"1matriz_"+tam+"x"+tam+".txt", tam);
+        Matriz2 = LeerArchivoTxt.leerArchivo(ruta2+"2matriz_"+tam+"x"+tam+".txt", tam);
     }
 }

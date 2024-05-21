@@ -24,8 +24,8 @@ public class GraphFrame extends JFrame {
         setLocationRelativeTo(null);
 
         matrixSizeComboBox = new JComboBox<>(new String[]{
-                "256x256", "512x512", "1024x1024", "2048x2048",
-                "3072x3072", "6144x6144", "8192x8192"
+                "16x16", "32x32", "64x64", "128x128",
+                "256x256", "512x512", "1024x1024","2048x2048"
         });
         matrixSizeComboBox.addActionListener(e -> updateChart());
 
