@@ -16,21 +16,21 @@ public class Main {
     static int[][] Matriz2;
 
     public static void main(String[] args) throws Exception {
-/*          1.NaivOnArray
-            2.NaivLoopUnrollingTwo
-            3.NaivLoopUnrollingFour
-            4.StrassenNaiv
-            5.WinogradOriginal
-            6.WinogradScaled
-            7.StrassenWinograd
-            8.III_3_Sequential_Block
-            9.IV_3_Sequential_Block
-            10.V_3_SequentialBlock
-            11.III_4_Parallel_Block
-            12.IV_4_Parallel_Block
-            13.V_4_Parallel_Block
-            14.III_5_Enhanced_Parallel_Block
-            15.IV_5_Enhanced_Parallel_Block
+    /*      1. NaivOnArray
+            2. NaivLoopUnrollingTwo
+            3. NaivLoopUnrollingFour
+            4. WinogradOriginal
+            5. WinogradScaled
+            6. StrassenNaiv
+            7. StrassenWinograd
+            8. III_3_Sequential_Block
+            9. III_4_Parallel_Block
+            10. III_5_Enhanced_Parallel_Block
+            11. IV_3_Sequential_Block
+            12. IV_4_Parallel_Block
+            13. IV_5_Enhanced_Parallel_Block
+            14. V_3_Sequential_Block
+            15. V_4_Parallel_Block
 
             Caso 1: 16
             Caso 2: 32
@@ -42,8 +42,8 @@ public class Main {
             Caso 8: 2048
 
          */
-        //Se debe tener creado las carpetas 1matriz y 2matriz en el src/main/java/
-        //crearMatrices(); //GENERA LAS MATRICES (TARDA VARIOS MINUTOS POR SU MAGNITUD)
+        //Se debe tener creado las carpetas 1matriz y 2matriz en el src/main/java/ antes de ejecutar crearMatrices();
+        //crearMatrices();
         //vaciarTiempos();
         //calcularTiempos();
         mostrarGrafica();
@@ -93,6 +93,7 @@ public class Main {
     }
 
     public static void crearMatrices() {
+        System.out.println("Generando matrices...");
         String ruta = "src/main/java/";
         int n = 16; // Número de columnas
         int m = 16; // Número de filas
@@ -153,16 +154,16 @@ public class Main {
                     executeAlgorithm(() -> NaivLoopUnrollingFour.naivLoopUnrollingFour(Matriz1, Matriz2), option);
                     break;
                 case 4:
-                    // StrassenNaiv
-                    executeAlgorithm(() -> StrassenNaiv.multiply(matrizDouble1, matrizDouble2), option);
-                    break;
-                case 5:
                     // WinogradOriginal
                     executeAlgorithm(() -> WinogradOriginal.multiply(matrizDouble1, matrizDouble2), option);
                     break;
-                case 6:
+                case 5:
                     // WinogradScaled
                     executeAlgorithm(() -> WinogradScaled.multiply(matrizDouble1, matrizDouble2), option);
+                    break;
+                case 6:
+                    // StrassenNaiv
+                    executeAlgorithm(() -> StrassenNaiv.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 case 7:
                     // StrassenWinograd
@@ -173,32 +174,32 @@ public class Main {
                     executeAlgorithm(() -> III_3_Sequential_Block.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 case 9:
-                    // IV_3_Sequential_Block
-                    executeAlgorithm(() -> IV_3_Sequential_Block.multiply(matrizDouble1, matrizDouble2), option);
-                    break;
-                case 10:
-                    // V_3_SequentialBlock
-                    executeAlgorithm(() -> V_3_Sequential_Block.multiply(matrizDouble1, matrizDouble2), option);
-                    break;
-                case 11:
                     // III_4_Parallel_Block
                     executeAlgorithm(() -> III_4_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
+                    break;
+                case 10:
+                    // III_5_Enhanced_Parallel_Block
+                    executeAlgorithm(() -> III_5_Enhanced_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
+                    break;
+                case 11:
+                    // IV_3_Sequential_Block
+                    executeAlgorithm(() -> IV_3_Sequential_Block.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 case 12:
                     // IV_4_Parallel_Block
                     executeAlgorithm(() -> IV_4_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 case 13:
-                    // V_4_Parallel_Block
-                    executeAlgorithm(() -> V_4_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
-                    break;
-                case 14:
-                    // III_5_Enhanced_Parallel_Block
-                    executeAlgorithm(() -> III_5_Enhanced_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
-                    break;
-                case 15:
                     // IV_5_Enhanced_Parallel_Block
                     executeAlgorithm(() -> IV_5_Enhanced_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
+                    break;
+                case 14:
+                    // V_3_SequentialBlock
+                    executeAlgorithm(() -> V_3_Sequential_Block.multiply(matrizDouble1, matrizDouble2), option);
+                    break;
+                case 15:
+                    // V_4_Parallel_Block
+                    executeAlgorithm(() -> V_4_Parallel_Block.multiply(matrizDouble1, matrizDouble2), option);
                     break;
                 default:
                     System.out.println("Opción incorrecta");
