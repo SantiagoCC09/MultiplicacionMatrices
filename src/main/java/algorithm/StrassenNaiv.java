@@ -1,292 +1,128 @@
 package algorithm;
 
 public class StrassenNaiv {
-    public static void algStrassenNaiv(double[][] matrizA, double[][] matrizB, double[][] matrizRes, int N, int P, int M) {
-        int maxSize, k, m, newSize, i, j;
-        maxSize = max(N,P);
+    public static int[][] multiply(int[][] A, int[][] B) {
+        int n = A.length;
 
-        if (maxSize < 16) {
-            maxSize = 16; // De forma contraria no es posible calcular el valor de k
-        }
-        k = (int) Math.floor(Math.log(maxSize)/Math.log(2)) -4;
-        m = (int) Math.floor(maxSize * Math.pow(2,-k)) +1;
-
-        newSize = m * (int) Math.pow(2,k);
-
-        double[][] newA = new double[newSize][];
-        double[][] newB = new double[newSize][];
-        double[][] auxResult = new double[newSize][];
-        for (i = 0; i < newSize; i++) {
-            newA[i] = new double[newSize];
-            newB[i] = new double[newSize];
-            auxResult[i] = new double[newSize];
+        // Si el tamaño de la matriz es 1x1, realiza la multiplicación directamente
+        if (n == 1) {
+            int[][] C = {{A[0][0] * B[0][0]}};
+            return C;
         }
 
-        for (i = 0; i < newSize; i++) {
-            for (j = 0; j < newSize; j++) {
-                newA[i][j] = 0.0;
-                newB[i][j] = 0.0;
+        // Si el tamaño de la matriz es pequeño, usa la multiplicación naive
+        if (n <= 2) {
+            return multiplyNaive(A, B);
+        }
+
+        // Inicialización de las submatrices
+        int newSize = n / 2;
+        int[][] A11 = new int[newSize][newSize];
+        int[][] A12 = new int[newSize][newSize];
+        int[][] A21 = new int[newSize][newSize];
+        int[][] A22 = new int[newSize][newSize];
+        int[][] B11 = new int[newSize][newSize];
+        int[][] B12 = new int[newSize][newSize];
+        int[][] B21 = new int[newSize][newSize];
+        int[][] B22 = new int[newSize][newSize];
+
+        // División de las matrices en submatrices
+        splitMatrix(A, A11, 0, 0);
+        splitMatrix(A, A12, 0, newSize);
+        splitMatrix(A, A21, newSize, 0);
+        splitMatrix(A, A22, newSize, newSize);
+        splitMatrix(B, B11, 0, 0);
+        splitMatrix(B, B12, 0, newSize);
+        splitMatrix(B, B21, newSize, 0);
+        splitMatrix(B, B22, newSize, newSize);
+
+        // Calculo de las M's
+        int[][] M1 = multiply(add(A11, A22), add(B11, B22));
+        int[][] M2 = multiply(add(A21, A22), B11);
+        int[][] M3 = multiply(A11, subtract(B12, B22));
+        int[][] M4 = multiply(A22, subtract(B21, B11));
+        int[][] M5 = multiply(add(A11, A12), B22);
+        int[][] M6 = multiply(subtract(A21, A11), add(B11, B12));
+        int[][] M7 = multiply(subtract(A12, A22), add(B21, B22));
+
+        // Calculo de las submatrices de C
+        int[][] C11 = add(subtract(add(M1, M4), M5), M7);
+        int[][] C12 = add(M3, M5);
+        int[][] C21 = add(M2, M4);
+        int[][] C22 = add(subtract(add(M1, M3), M2), M6);
+
+        // Combinación de las submatrices en la matriz resultante
+        int[][] C = new int[n][n];
+        joinMatrix(C11, C, 0, 0);
+        joinMatrix(C12, C, 0, newSize);
+        joinMatrix(C21, C, newSize, 0);
+        joinMatrix(C22, C, newSize, newSize);
+        return C;
+    }
+
+    // Multiplicación de matrices tradicional
+    public static int[][] multiplyNaive(int[][] A, int[][] B) {
+        int n = A.length;
+        int[][] C = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < n; k++) {
+                    C[i][j] += A[i][k] * B[k][j];
+                }
             }
         }
-        for (i = 0; i < N; i++) {
-            for (j = 0; j < P; j++) {
-                newA[i][j] = matrizA[i][j];
+        return C;
+    }
+
+    // Método para sumar dos matrices
+    public static int[][] add(int[][] A, int[][] B) {
+        int n = A.length;
+        int[][] C = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                C[i][j] = A[i][j] + B[i][j];
             }
         }
-        for (i = 0; i < N; i++) {
-            for (j = 0; j < M; j++) {
-                newB[i][j] = matrizB[i][j];
+        return C;
+    }
+
+    // Método para restar dos matrices
+    public static int[][] subtract(int[][] A, int[][] B) {
+        int n = A.length;
+        int[][] C = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                C[i][j] = A[i][j] - B[i][j];
             }
         }
-        strassenNaivStep(newA, newB, auxResult, newSize, m);
-        // Extraer el resultado
-        for (i = 0; i < N; i++) {
-            for (j = 0; j < M; j++) {
-                matrizRes[i][j] = auxResult[i][j]; // Resultado
+        return C;
+    }
+
+    // Método para dividir la matriz en submatrices
+    public static void splitMatrix(int[][] P, int[][] C, int iB, int jB) {
+        for (int i1 = 0, i2 = iB; i1 < C.length; i1++, i2++) {
+            for (int j1 = 0, j2 = jB; j1 < C.length; j1++, j2++) {
+                C[i1][j1] = P[i2][j2];
             }
         }
     }
 
-    private static void strassenNaivStep(double[][] matrizA, double[][] matrizB, double[][] matrizRes, int N, int m) {
-        int i, j, newSize;
-
-        if ((N % 2 == 0) && (N > m)) {
-            newSize = N / 2;
-
-            double[][] varA11 = new double[newSize][];
-            double[][] varA12 = new double[newSize][];
-            double[][] varA21 = new double[newSize][];
-            double[][] varA22 = new double[newSize][];
-            double[][] varB11 = new double[newSize][];
-            double[][] varB12 = new double[newSize][];
-            double[][] varB21 = new double[newSize][];
-            double[][] varB22 = new double[newSize][];
-
-            double[][] resultadoPart11 = new double[newSize][];
-            double[][] resultadoPart12 = new double[newSize][];
-            double[][] resultadoPart21 = new double[newSize][];
-            double[][] resultadoPart22 = new double[newSize][];
-
-            double[][] helper1 = new double[newSize][];
-            double[][] helper2 = new double[newSize][];
-
-            double[][] aux1 = new double[newSize][];
-            double[][] aux2 = new double[newSize][];
-            double[][] aux3 = new double[newSize][];
-            double[][] aux4 = new double[newSize][];
-            double[][] aux5 = new double[newSize][];
-            double[][] aux6 = new double[newSize][];
-            double[][] aux7 = new double[newSize][];
-
-            for (i = 0; i < newSize; i++) {
-                varA11[i] = new double[newSize];
-                varA12[i] = new double[newSize];
-                varA21[i] = new double[newSize];
-                varA22[i] = new double[newSize];
-                varB11[i] = new double[newSize];
-                varB12[i] = new double[newSize];
-                varB21[i] = new double[newSize];
-                varB22[i] = new double[newSize];
-
-                resultadoPart11[i] = new double[newSize];
-                resultadoPart12[i] = new double[newSize];
-                resultadoPart21[i] = new double[newSize];
-                resultadoPart22[i] = new double[newSize];
-
-                helper1[i] = new double[newSize];
-                helper2[i] = new double[newSize];
-
-                aux1[i] = new double[newSize];
-                aux2[i] = new double[newSize];
-                aux3[i] = new double[newSize];
-                aux4[i] = new double[newSize];
-                aux5[i] = new double[newSize];
-                aux6[i] = new double[newSize];
-                aux7[i] = new double[newSize];
-            }
-            // Para llenar nuevas matrices
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varA11[i][j] = matrizA[i][j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varA12[i][j] = matrizA[i][newSize + j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varA21[i][j] = matrizA[newSize + i][j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varA22[i][j] = matrizA[newSize + i][newSize + j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varB11[i][j] = matrizB[i][j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varB12[i][j] = matrizB[i][newSize + j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varB21[i][j] = matrizB[newSize + i][j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    varB22[i][j] = matrizB[newSize + i][newSize + j];
-                }
-            }
-            plus(varA11, varA22, helper1, newSize, newSize);
-            plus(varB11, varB22, helper2, newSize, newSize);
-            strassenNaivStep(helper1, helper2, aux1, newSize, m);
-
-            plus(varA21, varA22, helper1, newSize, newSize);
-            strassenNaivStep(helper1, varB11,aux2, newSize, m);
-
-            minus(varB12, varB22, helper1, newSize, newSize);
-            strassenNaivStep(varA11, helper1, aux3, newSize, m);
-
-            minus(varB21, varB11, helper1, newSize, newSize);
-            strassenNaivStep(varA22, helper1, aux4, newSize, m);
-
-            plus(varA11, varA12, helper1, newSize, newSize);
-            strassenNaivStep(helper1, varB22, aux5, newSize, m);
-
-            minus(varA21, varA11, helper1, newSize, newSize);
-            plus(varB11, varB12, helper2, newSize, newSize);
-            strassenNaivStep(helper1, helper2, aux6, newSize, m);
-
-            minus(varA12, varA22, helper1, newSize, newSize);
-            plus(varB21, varB22, helper2, newSize, newSize);
-            strassenNaivStep(helper1, helper2, aux7, newSize, m);
-
-            // Calcular las partes del resultado (cuatro)
-            plus(aux1, aux4, resultadoPart11, newSize, newSize);
-            minus(resultadoPart11, aux5, resultadoPart11, newSize, newSize);
-            plus(resultadoPart11, aux7, resultadoPart11, newSize, newSize);
-
-            plus(aux3, aux5, resultadoPart12, newSize, newSize);
-            plus(aux2, aux4, resultadoPart21, newSize, newSize);
-
-            plus(aux1, aux3, resultadoPart22, newSize, newSize);
-            minus(resultadoPart22, aux2, resultadoPart22, newSize, newSize);
-            plus(resultadoPart22, aux6, resultadoPart22, newSize, newSize);
-
-            // Almacenar resultados en la matriz
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    matrizRes[i][j] = resultadoPart11[i][j];
-                }
-            }
-
-            for (i = 0; i < newSize; i++) {
-                for (j = 0; j < newSize; j++) {
-                    matrizRes[i][newSize + j] = resultadoPart12[i][j];
-                }
-            }
-
-            for( i = 0; i < newSize; i++){
-                for( j = 0; j < newSize; j++){
-                    matrizRes[newSize + i][j] = resultadoPart21[i][j];
-                }
-            }
-
-            for( i = 0; i < newSize; i++){
-                for( j = 0; j < newSize; j++){
-                    matrizRes[newSize + i][newSize + j] = resultadoPart22[i][j];
-                }
-            }
-
-            // Variables auxiliares
-            varA11 = null;
-            varA12 = null;
-            varA21 = null;
-            varA22 = null;
-
-            varB11 = null;
-            varB12 = null;
-            varB21 = null;
-            varB22 = null;
-
-            resultadoPart11 = null;
-            resultadoPart12 = null;
-            resultadoPart21 = null;
-            resultadoPart22 = null;
-
-            helper1 = null;
-            helper2 = null;
-
-            aux1 = null;
-            aux2 = null;
-            aux3 = null;
-            aux4 = null;
-            aux5 = null;
-            aux6 = null;
-            aux7 = null;
-        } else {
-            // Algoritmo ingenuo
-            algoritmoNaivStandard(matrizA, matrizB, matrizRes, N, N, N);
-        }
-    }
-
-    private static void algoritmoNaivStandard(double[][] matrizA, double[][] matrizB, double[][] matrizRes, int N, int P, int M) {
-        double aux;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                aux = 0.0;
-                for (int k = 0; k < P; k++) {
-                    aux += matrizA[i][k] * matrizB[k][j];
-                }
-                matrizRes[i][j] = aux;
+    // Método para unir las submatrices en una matriz
+    public static void joinMatrix(int[][] C, int[][] P, int iB, int jB) {
+        for (int i1 = 0, i2 = iB; i1 < C.length; i1++, i2++) {
+            for (int j1 = 0, j2 = jB; j1 < C.length; j1++, j2++) {
+                P[i2][j2] = C[i1][j1];
             }
         }
     }
 
-    private static int max(int N, int P) {
-        if (N < P) {
-            return P;
-        } else {
-            return N;
-        }
-    }
-
-    private static void minus(double[][] matrizA, double[][] matrizB, double[][] matrizRes, int N, int M) {
-        for (int i =0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                matrizRes[i][j] = matrizA[i][j] - matrizB[i][j];
+    // Método para imprimir la matriz
+    public static void printMatrix(int[][] matrix) {
+        for (int[] row : matrix) {
+            for (int val : row) {
+                System.out.print(val + " ");
             }
+            System.out.println();
         }
-    }
-
-    private static void plus(double[][] matrizA, double[][] matrizB, double[][] matrizRes, int N, int M) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                matrizRes[i][j] = matrizA[i][j] + matrizB[i][j];
-            }
-        }
-    }
-
-    public static void multiply(double[][] matrizA, double[][] matrizB) {
-        int N = matrizA.length;
-        int P = matrizB.length;
-        int M = matrizB[0].length;
-        double[][] matrizRes = new double[N][M];
-        algStrassenNaiv(matrizA, matrizB, matrizRes, N, P, M);
     }
 }

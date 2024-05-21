@@ -19,7 +19,6 @@ public class Main {
         //Se debe tener creado las carpetas 1matriz y 2matriz en el src/main/java/
         //crearMatrices(); //GENERA LAS MATRICES (TARDA VARIOS MINUTOS POR SU MAGNITUD)
 
-
         /*          1.NaivOnArray
                     2.NaivLoopUnrollingTwo
                     3.NaivLoopUnrollingFour
@@ -49,18 +48,15 @@ public class Main {
         // Llamar al método vaciarTiempos() para limpiar los archivos de tiempos antes de empezar
         //vaciarTiempos();
         /*
+        for(int algoritmo=1; algoritmo<=15; algoritmo++) {
+            for (int caso = 1; caso <= 8; caso++) {
 
-        for(int algoritmo=4; algoritmo<=15; algoritmo++){
-            for(int caso=8; caso<=8; caso++){
-
+                System.out.println("Ejecutando algoritmo "+algoritmo+" caso "+caso);
                 matrices(caso);
                 algorithm(algoritmo);
-
-                System.out.println("Termino algoritmo: " + algoritmo + " caso "+caso+"\n");
-
-                //TiempoEjecucion.ResulTimeMatrix(caso);
-
+                System.out.println("Termino algoritmo: " + algoritmo + " caso " + caso + "\n");
                 try {
+
                     ExportarTiempos.exportarTiemposMatriz(TiempoEjecucion.matricesTiempoAlgoritmos, caso);
                     ExportarTiempos.exportarTiempos(TiempoEjecucion.matricesTiempoAlgoritmos, algoritmo);
                 } catch (IOException e) {
@@ -68,6 +64,9 @@ public class Main {
                 }
 
                 TiempoEjecucion.matricesTiempoAlgoritmos.clear();
+
+            }
+        }
 
          */
         mostrarGrafica();
@@ -171,7 +170,7 @@ public class Main {
                     break;
                 case 4:
                     // StrassenNaiv
-                    executeAlgorithm(() -> StrassenNaiv.multiply(matrizDouble1, matrizDouble2), option);
+                    executeAlgorithm(() -> StrassenNaiv.multiply(Matriz1, Matriz2), option);
                     break;
                 case 5:
                     // WinogradOriginal
@@ -183,7 +182,7 @@ public class Main {
                     break;
                 case 7:
                     // StrassenWinograd
-                    executeAlgorithm(() -> StrassenWinograd.multiply(matrizDouble1, matrizDouble2), option);
+                    executeAlgorithm(() -> StrassenWinograd.multiply(Matriz1, Matriz2), option);
                     break;
                 case 8:
                     // III_3_Sequential_Block
