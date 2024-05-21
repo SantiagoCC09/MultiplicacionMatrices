@@ -16,39 +16,39 @@ public class Main {
     static int[][] Matriz2;
 
     public static void main(String[] args) throws Exception {
+/*          1.NaivOnArray
+            2.NaivLoopUnrollingTwo
+            3.NaivLoopUnrollingFour
+            4.StrassenNaiv
+            5.WinogradOriginal
+            6.WinogradScaled
+            7.StrassenWinograd
+            8.III_3_Sequential_Block
+            9.IV_3_Sequential_Block
+            10.V_3_SequentialBlock
+            11.III_4_Parallel_Block
+            12.IV_4_Parallel_Block
+            13.V_4_Parallel_Block
+            14.III_5_Enhanced_Parallel_Block
+            15.IV_5_Enhanced_Parallel_Block
+
+            Caso 1: 16
+            Caso 2: 32
+            Caso 3: 64
+            Caso 4: 128
+            Caso 5: 256
+            Caso 6: 512
+            Caso 7: 1024
+            Caso 8: 2048
+
+         */
         //Se debe tener creado las carpetas 1matriz y 2matriz en el src/main/java/
-        crearMatrices(); //GENERA LAS MATRICES (TARDA VARIOS MINUTOS POR SU MAGNITUD)
-
-        /*          1.NaivOnArray
-                    2.NaivLoopUnrollingTwo
-                    3.NaivLoopUnrollingFour
-                    4.StrassenNaiv
-                    5.WinogradOriginal
-                    6.WinogradScaled
-                    7.StrassenWinograd
-                    8.III_3_Sequential_Block
-                    9.IV_3_Sequential_Block
-                    10.V_3_SequentialBlock
-                    11.III_4_Parallel_Block
-                    12.IV_4_Parallel_Block
-                    13.V_4_Parallel_Block
-                    14.III_5_Enhanced_Parallel_Block
-                    15.IV_5_Enhanced_Parallel_Block
-
-                    Caso 1: 256
-                    Caso 2: 512
-                    Caso 3: 1024
-                    Caso 4: 2048
-                    Caso 5: 3072
-                    Caso 6: 4096
-                    Caso 7: 6144
-                    Caso 8: 8192
-
-                     */
-        // Llamar al método vaciarTiempos() para limpiar los archivos de tiempos antes de empezar
+        //crearMatrices(); //GENERA LAS MATRICES (TARDA VARIOS MINUTOS POR SU MAGNITUD)
         //vaciarTiempos();
-
-        /*
+        //calcularTiempos();
+        mostrarGrafica();
+    }
+    public static void calcularTiempos(){
         for(int algoritmo=1; algoritmo<=15; algoritmo++) {
             for (int caso = 1; caso <= 8; caso++) {
 
@@ -57,20 +57,14 @@ public class Main {
                 algorithm(algoritmo);
                 System.out.println("Termino algoritmo: " + algoritmo + " caso " + caso + "\n");
                 try {
-
                     ExportarTiempos.exportarTiemposMatriz(TiempoEjecucion.matricesTiempoAlgoritmos, caso);
                     ExportarTiempos.exportarTiempos(TiempoEjecucion.matricesTiempoAlgoritmos, algoritmo);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
                 TiempoEjecucion.matricesTiempoAlgoritmos.clear();
-
             }
         }
-
-         */
-        mostrarGrafica();
     }
 
     private static void mostrarGrafica() {
@@ -109,15 +103,12 @@ public class Main {
             // Guardar la matriz en un archivo
             guardarMatrizEnArchivo(matriz, ruta+"1matriz/1matriz_" + n + "x" + m + ".txt");
             guardarMatrizEnArchivo(matriz, ruta+"2matriz/2matriz_" + n + "x" + m + ".txt");
-
             n=n*2;
             m=m*2;
         }
 
         System.out.println("Matrices generadas \n");
     }
-
-
 
     public static int[][] generarMatriz(int n, int m) {
         int[][] matriz = new int[m][n];
