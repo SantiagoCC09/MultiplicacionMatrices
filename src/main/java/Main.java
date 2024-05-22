@@ -1,11 +1,8 @@
 import algorithm.*;
-import tools.ExportarTiempos;
-import tools.GraphFrame;
-import tools.LeerArchivoTxt;
-import tools.TiempoEjecucion;
+import tools.*;
+
 import javax.swing.*;
 import java.io.*;
-import java.util.List;
 import java.util.Random;
 
 public class Main {
@@ -47,7 +44,25 @@ public class Main {
         //vaciarTiempos();
         //calcularTiempos();
         mostrarGrafica();
+        mostrarGraficaComparativa();
+        mostrarGrafica_Python();
     }
+
+    private static void mostrarGrafica_Python() {
+        SwingUtilities.invokeLater(() -> {
+            GraficaPython frame = new GraficaPython();
+            frame.setVisible(true);
+        });
+
+    }
+
+    private static void mostrarGraficaComparativa() {
+        SwingUtilities.invokeLater(() -> {
+            GraficaComparativa frame = new GraficaComparativa();
+            frame.setVisible(true);
+        });
+    }
+
     public static void calcularTiempos(){
         for(int algoritmo=1; algoritmo<=15; algoritmo++) {
             for (int caso = 1; caso <= 8; caso++) {
@@ -69,7 +84,7 @@ public class Main {
 
     private static void mostrarGrafica() {
         SwingUtilities.invokeLater(() -> {
-            GraphFrame frame = new GraphFrame();
+            GraficaJava frame = new GraficaJava();
             frame.setVisible(true);
         });
     }
